@@ -1,0 +1,29 @@
+frontend:
+  replicas: 1
+  image:
+    repository: nginx
+    tag: "1.21.1"
+  config:
+    default.conf: |
+      server {
+        listen       80;
+        server_name  localhost;
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+        location / {
+          try_files $uri $uri/ /index.html;
+        }
+      }
+backend:
+  replicas: 1
+  image:
+    repository: my-dotnet-app
+    tag: latest
+database:
+  replicas: 1
+  image:
+    repository: postgres
+    tag: "13.1"
+  credentials:
+    username: my-db-username
+    password: my-db-password

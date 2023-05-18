@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: parent-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: parent-app
+  template:
+    metadata:
+      labels:
+        app: parent-app
+    spec:
+      containers:
+        - name: frontend
+          image: {{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}
+          ports:
+            - name: http
+              containerPort: 80
+          volumeMounts:
+            - name: frontend-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+        - name: backend
+          image: {{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: database-credentials
+                  key: connection-string
+        - name: database
+          image: {{ .Values.database.image.repository }}:{{ .Values.database.image.tag }}
+          ports:
+            - name: postgresql
+              containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: database-credentials
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: database-credentials
+                  key: password
+            - name: POSTGRES_DB
+              value: library
+          volumeMounts:
+            - name: postgresql-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: frontend-config
+          configMap:
+            name: frontend-config
+        - name: postgresql-data
+          persistentVolumeClaim:
+            claimName: database-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: parent-app
+    child-app: frontend-app
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: parent-app
+    child-app: backend-app
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: database-service
+spec:
+  selector:
+    app: parent-app
+    child-app: database-app
+  ports:
+    - name: postgresql
+      port: 5432
+      targetPort: 5432
