@@ -4,7 +4,6 @@ metadata:
   name: nginx-ingress
   namespace: default
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   rules:
@@ -24,4 +23,11 @@ spec:
               service:
                 name: backend-service
                 port:
-                  number: 80
+                  number: 5000
+          - path: /backend/health
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-service
+                port:
+                  number: 5000
