@@ -1,5 +1,0 @@
-service:
-  type: ClusterIP
-  port: 5000
-ingress:
-  enabled: false
