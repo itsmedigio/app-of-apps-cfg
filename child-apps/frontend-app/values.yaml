@@ -1,6 +1,6 @@
 image:
-  repository: nginx
-  tag: "1.21.1"
+  repository: itsmedigio/app-of-apps-fe
+  tag: latest
 service:
   type: NodePort
   port: 80

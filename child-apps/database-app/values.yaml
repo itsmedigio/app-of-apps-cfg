@@ -6,5 +6,5 @@ persistence:
   size: 1Gi
   storageClass: standard
 credentials:
-  username: my-db-username
-  password: my-db-password
+  username: postgres
+  password: postgres

@@ -1,8 +1,8 @@
 frontend:
   replicas: 1
   image:
-    repository: nginx
-    tag: "1.21.1"
+    repository: itsmedigio/app-of-apps-fe
+    tag: latest
   config:
     default.conf: |
       server {
@@ -17,7 +17,7 @@ frontend:
 backend:
   replicas: 1
   image:
-    repository: my-dotnet-app
+    repository: itsmedigio/app-of-apps-be
     tag: latest
 database:
   replicas: 1
@@ -25,5 +25,5 @@ database:
     repository: postgres
     tag: "13.1"
   credentials:
-    username: my-db-username
-    password: my-db-password
+    username: postgres
+    password: postgres

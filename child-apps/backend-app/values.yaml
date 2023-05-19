@@ -1,8 +1,8 @@
 image:
-  repository: my-dotnet-app
+  repository: itsmedigio/app-of-apps-be
   tag: latest
 service:
   type: ClusterIP
-  port: 8080
+  port: 5000
 ingress:
   enabled: false
